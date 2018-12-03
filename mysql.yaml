@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: towcat-war2
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: towcat-war2
+    tier: mysql
+---
+apiVersion: apps/v1beta2 #apps/v1 // for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: mysql
+  labels:
+    app: towcat-war2
+spec:
+  selector:
+    matchLabels:
+      app: towcat-war2
+  serviceName: mysql
+  template:
+    metadata:
+      labels:
+        app: towcat-war2
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "Pramati@1234"
+        - name: MYSQL_HOST
+          value: "mysql"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/log/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        hostPath:
+         path: /root/mysql
+
+

@@ -1,0 +1,98 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: crudservlet-sql-config
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  crudservlet.sql: |-
+    #DROP DATABASE IF EXISTS crudservlet;
+    create database if not exists crudservlet;
+    USE crudservlet;
+    DROP TABLE IF EXISTS `user905`;
+    CREATE TABLE `user905` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(128) DEFAULT NULL,
+    `password` varchar(45) DEFAULT NULL,
+    `email` varchar(100) DEFAULT NULL,
+    `country` varchar(100) DEFAULT NULL,
+    PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    LOCK TABLES `user905` WRITE;
+    UNLOCK TABLES;
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat
+  labels:
+    app: tomcat
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+  selector:
+    app: tomcat
+    tier: frontend
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tomcat
+  labels:
+    app: tomcat
+spec:
+  selector:
+    matchLabels:
+      app: tomcat
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tomcat
+        tier: frontend
+    spec:
+      initContainers:
+        - name: crudservlet-db-init
+          image: mysql:5.6
+          command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            #            mysql -hmysql -uroot -pPramati@1234 < /tmp/crudservlet.sql
+            mysql -h$MYSQL_HOST -uroot -p$MYSQL_ROOT_PASSWORD < /tmp/crudservlet.sql
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: "Pramati@1234"
+          - name: MYSQL_HOST
+            value: "mysql"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /tmp/
+      containers:
+        - image: madhavik/mvnjfrog:1.0
+          name: tomcat
+          env:
+          - name: mysqlhost
+            value: "mysql"
+          - name: mysqlusername
+            value: "root"
+          - name: mysqlpassword
+            value: "Pramati@1234"
+          ports:
+          - containerPort: 8080
+            name: tomcat
+          volumeMounts:
+          - name: tomcat-persistent-storage
+            mountPath: /usr/local/tomcat/logs
+      volumes:
+      - name: tomcat-persistent-storage
+        hostPath:
+         path: /root/
+      - name: config-volume
+        configMap:
+          name: crudservlet-sql-config
