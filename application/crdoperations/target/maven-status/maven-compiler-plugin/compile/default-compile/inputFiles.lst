@@ -1,7 +1,7 @@
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/ViewServlet.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/EmpDao.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/EditServlet2.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/DeleteServlet.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/SaveServlet.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/EditServlet.java
-/home/madhavik/jenkins_kube/application/crdoperations/src/main/java/Emp.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/Emp.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/EmpDao.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/EditServlet2.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/EditServlet.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/ViewServlet.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/SaveServlet.java
+/home/madhavi/jenkinskube/application/crdoperations/src/main/java/DeleteServlet.java
