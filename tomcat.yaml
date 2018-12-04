@@ -73,7 +73,7 @@ spec:
           - name: config-volume
             mountPath: /tmp/
       containers:
-        - image: madhavik/demoimage:v2
+        - image: {{IMAGE}}
           name: tomcat
           env:
           - name: mysqlhost
